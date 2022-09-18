@@ -13,6 +13,8 @@
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <aspectj.version>1.9.9.1</aspectj.version>
+    <cucumber.version>7.2.3</cucumber.version>
   </properties>
 
   <dependencies>
@@ -20,14 +22,14 @@
     <dependency>
       <groupId>io.rest-assured</groupId>
       <artifactId>rest-assured</artifactId>
-      <version>5.1.1</version>
+      <version>5.2.0</version>
     </dependency>
 
     <!-- JSON Schema Validator -->
     <dependency>
       <groupId>io.rest-assured</groupId>
       <artifactId>json-schema-validator</artifactId>
-      <version>5.1.1</version>
+      <version>5.2.0</version>
     </dependency>
 
     <!-- JUnit -->
@@ -35,6 +37,7 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.13.2</version>
+      <scope>test</scope>
     </dependency>
 
     <!-- Google JSON Serialize and Deserialize -->
@@ -54,15 +57,34 @@
     <!-- Cucumber  -->
     <dependency>
       <groupId>io.cucumber</groupId>
+      <artifactId>cucumber-core</artifactId>
+      <version>${cucumber.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.cucumber</groupId>
       <artifactId>cucumber-java</artifactId>
-      <version>7.7.0</version>
+      <version>${cucumber.version}</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>io.cucumber</groupId>
       <artifactId>cucumber-junit</artifactId>
-      <version>7.7.0</version>
+      <version>${cucumber.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.cucumber</groupId>
+      <artifactId>cucumber-picocontainer</artifactId>
+      <version>${cucumber.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.qameta.allure</groupId>
+      <artifactId>allure-cucumber7-jvm</artifactId>
+      <version>2.17.3</version>
       <scope>test</scope>
     </dependency>
 
@@ -139,6 +161,35 @@
               </configuration>
             </execution>
           </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>3.0.0-M5</version>
+          <configuration>
+            <testFailureIgnore>false</testFailureIgnore>
+            <argLine>
+              -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
+            </argLine>
+            <includes>
+              <include>RunCucumberTest.class</include>
+            </includes>
+          </configuration>
+          <dependencies>
+            <dependency>
+              <groupId>org.aspectj</groupId>
+              <artifactId>aspectjweaver</artifactId>
+              <version>${aspectj.version}</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+        <plugin>
+          <groupId>io.qameta.allure</groupId>
+          <artifactId>allure-maven</artifactId>
+          <version>2.11.2</version>
+          <configuration>
+            <reportVersion>2.4.1</reportVersion>
+          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
